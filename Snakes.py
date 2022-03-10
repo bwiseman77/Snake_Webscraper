@@ -5,10 +5,6 @@ import time
 import sys
 import os
 
-from selenium.webdriver.support.ui import WebDriverWait
-def document_initialised(driver):
-    return driver.execute_script("return initialised")
-
 # Constants
 def set_path():
     if os.name == "posix":
@@ -113,11 +109,6 @@ def follow_url(store, url=URL, path=PATH):
     # get page source
     page = driver.page_source
 
-    #results = driver.find_elements(By.CLASS_NAME, "store-info-item")
-    #store_info = []
-    #for el in results:
-    #    store_info.append(el)
-
     # build store infor list
     store_info = [el for el in driver.find_elements(By.CLASS_NAME, "store-info-item")]
 
@@ -157,10 +148,6 @@ def find_data(Snake_links):
     Snake_data = {}
     for page in Snake_links:
         Snake_data[page] = [follow_url(link) for link in Snake_links[page]]
-        #Snake_data[page] = []
-        #for link in Snake_links[page]:
-        #    data = follow_url(link)
-        #    Snake_data[page].append(data)
 
     return Snake_data
 
@@ -179,7 +166,6 @@ def write_data(Snake_data, append=False, file="data.csv"):
         f.write("Name,Owner,Phone\n")
     else:
         f = open(file, "a")
-
 
     for page in Snake_data:
         for d in Snake_data[page]:
