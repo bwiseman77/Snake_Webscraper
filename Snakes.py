@@ -1,3 +1,4 @@
+#!/Users/brettwiseman/opt/miniconda3/bin/python
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import re
@@ -24,8 +25,9 @@ def usage(status=0):
     -l: LIMIT       limit of how many pages to search
     -s: START       page to start on
     -f: FILE_NAME   file to write to
+    -p:             makes each page on a new file with name data(count).csv
     -h:             display usage
-    ''').format(sys.argv[0])
+    '''.format(os.path.basename(sys.argv[0])))
     sys.exit(status)
 
 def open_driver(url, path=PATH):
@@ -151,7 +153,7 @@ def find_data(Snake_links):
 
     return Snake_data
 
-def write_data(Snake_data, append=False, file="data.csv"):
+def write_data(Snake_data, append=False, file="data.csv", sep_page=False, init=0):
     ''' Writes data from Snakes dict to a csv file
 
         Snakes: dict of all data
@@ -161,13 +163,22 @@ def write_data(Snake_data, append=False, file="data.csv"):
     '''
 
     # write data into a csv file
-    if not append:
+    if sep_page:
+        file_p = file
+        count = init
+    elif not append:
         f = open(file, "w")
         f.write("Name,Owner,Phone\n")
     else:
         f = open(file, "a")
 
     for page in Snake_data:
+        if sep_page:
+            file = file_p.split('.')[0] + str(count) + ".csv"
+            f = open(file, "w")
+            f.write("Name,Owner,Phone\n")
+            count += 1
+
         for d in Snake_data[page]:
                 line = "{},{},{}\n".format(d['Name'], d['Owner'], d['Phone'])
                 f.write(line)
@@ -178,10 +189,10 @@ def main():
     limit = 1
     start = '1'
     file_name = "data.csv"
+    pages = False
 
     # parse arguments
     args = sys.argv[1:]
-
     while args and args[0].startswith('-'):
         arg = args.pop(0)
 
@@ -193,6 +204,9 @@ def main():
             start = args.pop(0)
         elif arg == "-f":
             file_name = args.pop(0)
+        elif arg == "-p":
+            pages = True
+            doAppend = False
         elif arg == "-h":
             usage(0)
         else:
@@ -205,7 +219,7 @@ def main():
     Snake_data = find_data(Snake_links)
 
     # print to file
-    write_data(Snake_data, append=doAppend, file=file_name)
+    write_data(Snake_data, append=doAppend, file=file_name, sep_page=pages, init=int(start))
 
 if __name__ == '__main__':
     main()
