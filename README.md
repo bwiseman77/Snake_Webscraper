@@ -1,5 +1,11 @@
 # Snake_Webscraper
 
+## Install Python and Pip
+
+https://bootstrap.pypa.io/get-pip.py
+
+https://www.python.org/
+
 ## Install Chromedriver
 https://chromedriver.chromium.org/downloads
 
