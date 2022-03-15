@@ -120,8 +120,8 @@ def follow_url(store, url=URL, path=PATH):
     #   Phone is 3, and if there, assumes in ***-***-**** format
 
     data = {}
-    data['Name'] = re.findall(r'(.*) - MorphMarket', driver.title)[0].replace(",", "")
-    data['Owner'] = store_info[0].text
+    data['Name'] = re.findall(r'(.*) - MorphMarket', driver.title)[0].replace(",", " ")
+    data['Owner'] = str(store_info[0].text).replace(",", " ")
     if re.search(r'\d{3}-\d{3}-\d{4}', store_info[2].text):
         data['Phone'] = store_info[2].text
     else:
