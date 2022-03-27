@@ -1,5 +1,7 @@
 # Snake_Webscraper
 
+Scrapes name, phone number, and store name from the ball python stores on Morphmarket - Made for Jakub Drwal
+
 ## Install Python and Pip
 
 https://bootstrap.pypa.io/get-pip.py
