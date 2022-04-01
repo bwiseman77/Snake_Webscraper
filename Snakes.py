@@ -60,9 +60,10 @@ def build_url_dict(k=1, url=URL, page_num=PAGE_START, path=PATH, page_h=PAGE_H):
     # set variables
     page_count = 0
     Snakes = {}
+    next_page = True
 
     # while there is a next page or under page limit
-    while next and page_count < k:
+    while next_page and page_count < k:
 
         # open driver with url
         curl = url + page_h + page_num
@@ -78,7 +79,7 @@ def build_url_dict(k=1, url=URL, page_num=PAGE_START, path=PATH, page_h=PAGE_H):
         if not re.search(r'page-item  disabled', page):
             page_num = re.findall(r'title="Next Page" href="\?cat=bps&amp;page=(.*)"><span', page)[0]
         else:
-            page_num = None
+            next_page = False
 
         # quit driver - seems to need to happen otherwire thinks we are a bot
         driver.quit()
@@ -108,11 +109,15 @@ def follow_url(store, url=URL, path=PATH):
     curl = url + store
     driver = open_driver(curl)
 
+    print(f'store: {store}
     # get page source
     page = driver.page_source
 
     # build store infor list
     store_info = [el for el in driver.find_elements(By.CLASS_NAME, "store-info-item")]
+    if len(store_info) == 0:
+        driver.quit()
+        return {"Name" : "error", "Owner" : "error", "Phone" : "error"}
 
     # build data dict -  assumes data is in same order on website
     #   Name is in title of page, and has " - MorphMarket" in it
@@ -149,6 +154,7 @@ def find_data(Snake_links):
     # build dict that has all data from every link
     Snake_data = {}
     for page in Snake_links:
+        print(f'Page: {page}')
         Snake_data[page] = [follow_url(link) for link in Snake_links[page]]
 
     return Snake_data
